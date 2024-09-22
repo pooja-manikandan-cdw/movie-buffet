@@ -3,9 +3,8 @@
  * @param {object} requestBody
  * @returns returns the token on successful login
  */
-const loginServices = async (requestBody) => {
+const login = async (requestBody) => {
   // logic for login
-  console.log("loginServices");
 };
 
 /**
@@ -13,9 +12,8 @@ const loginServices = async (requestBody) => {
  * @param {*} param - contains username password
  * @returns registered user
  */
-const registerServices = async ({ username, password }) => {
-  // logic to register
-  console.log("registerServices");
+const register = async ({ userId, username, password }) => {
+  // logic to registerif (!password || !username) {
 };
 
-module.exports = { loginServices, registerServices };
+module.exports = { login, register };
