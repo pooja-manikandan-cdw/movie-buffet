@@ -4,7 +4,7 @@
     "movieName": "The Dark Knight",
     "genre": "action",
     "favorite": "true",
-    "rating": 10,
+    "rating": 9.0,
     "moviePoster": "",
     "moviePlot": "The Dark Knight reunites Christian Bale with director Christopher Nolan and takes Batman across the world in his quest to fight a growing criminal threat known as The Joker "
   },
@@ -16,6 +16,15 @@
     "rating": 8.8,
     "moviePoster": "",
     "moviePlot": "A thief enters people's dreams and steals their secrets."
+  },
+  {
+    "movieId": "3",
+    "movieName": "Shutter Island",
+    "genre": "horror",
+    "favorite": "true",
+    "rating": 8.2,
+    "moviePoster": "",
+    "moviePlot": "When U.S. Marshal Teddy Daniels arrives at the asylum for the criminally insane on Shutter Island, he uncovers terrifying truths about the island and finds out some places never let you go."
   },
   {
     "movieId": "4",
@@ -31,7 +40,7 @@
     "movieName": "Transformers",
     "genre": "science fiction",
     "favorite": "true",
-    "rating": 7,
+    "rating": 7.0,
     "moviePoster": "",
     "moviePlot": "Dueling alien races, the Autobots and the Decepticons, bring their battle to Earth, leaving the future of humankind hanging in the balance."
   },
@@ -78,14 +87,6 @@
     "favorite": "true",
     "rating": 8.3,
     "moviePoster": "",
-    "moviePlot": "A troubled young genius finds his allegiance to his friends challenged by new opportunities."
-  },
-  {
-    "movieId": "11",
-    "movieName": "Good Will Hunting",
-    "genre": "drama",
-    "favorite": "true",
-    "rating": 8.3,
     "moviePlot": "A troubled young genius finds his allegiance to his friends challenged by new opportunities."
   }
 ]
