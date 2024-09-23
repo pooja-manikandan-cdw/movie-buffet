@@ -45,7 +45,7 @@ const getMovieByGenre = async (genre) => {
         `Movie not found for the genre ${genre}`,
         "MOVIE_NOT_FOUND"
       );
-    return taskFound;
+    return taskFound
   } catch (e) {
     throw Error(e);
   }
