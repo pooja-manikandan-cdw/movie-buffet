@@ -1,4 +1,4 @@
-const { login, register } = require("../services/auth");
+const { loginUser, registerUser } = require("../services/userServices");
 
 /**
  * @description calls logins services with req body passed
@@ -8,7 +8,7 @@ const { login, register } = require("../services/auth");
  */
 const loginController = async (req, res, next) => {
   try {
-    const response = await login(req.body);
+    const response = await loginUser(req.body);
     if (response) {
       res
         .status(200)
@@ -27,7 +27,7 @@ const loginController = async (req, res, next) => {
  */
 const registerController = async (req, res, next) => {
   try {
-    const response = await register(req.body);
+    const response = await registerUser(req.body);
     if (response)
       res
         .status(201)

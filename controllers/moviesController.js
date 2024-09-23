@@ -5,11 +5,16 @@ const {
   updateMovie,
   deleteMovie,
   getMovieByGenre,
-} = require("../services/movies");
+} = require("../services/movieServices");
 
 const getAllMoviesController = async (req, res, next) => {
   try {
-    const response = await getAllMovies();
+    let response;
+    if (req.query.genre) {
+      response = getMovieByGenre(req.query.genre);
+    } else {
+      response = await getAllMovies();
+    }
     if (response) {
       res.status(200).send({ status: 200, data: response });
     }
@@ -21,17 +26,6 @@ const getAllMoviesController = async (req, res, next) => {
 const getMovieByIdController = async (req, res, next) => {
   try {
     const response = await getMovieById(req.params.movieId);
-    if (response) {
-      res.status(200).send({ status: 200, data: response });
-    }
-  } catch (error) {
-    next(error);
-  }
-};
-const getMovieByGenreController = async (req, res, next) => {
-  const { genre } = req.query;
-  try {
-    const response = await getMovieByGenre(genre);
     if (response) {
       res.status(200).send({ status: 200, data: response });
     }
@@ -78,7 +72,6 @@ const deleteMovieController = async (req, res, next) => {
 module.exports = {
   getAllMoviesController,
   getMovieByIdController,
-  getMovieByGenreController,
   createMovieController,
   updateMovieController,
   deleteMovieController,

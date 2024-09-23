@@ -1,5 +1,5 @@
 const express = require("express");
-const authRoutes = require("./routers/authRoutes");
+const userRoutes = require("./routers/userRoutes");
 const movieRoutes = require("./routers/movieRoutes");
 const errorHandler = require("./middleware/errorHandler");
 const { authoriseUser } = require("./middleware/authoriseUser");
@@ -8,7 +8,7 @@ require("dotenv").config();
 const app = express();
 
 app.use(express.json());
-app.use("/", authRoutes);
+app.use("/", userRoutes);
 app.use("/movies", authoriseUser, movieRoutes);
 app.use(errorHandler);
 

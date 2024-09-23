@@ -3,11 +3,11 @@ const { LOGIN, REGISTER } = require("../constants/path");
 const {
   loginController,
   registerController,
-} = require("../controllers/authController");
+} = require("../controllers/userController");
 
 const router = express.Router();
 
-router.get(LOGIN, loginController);
+router.post(LOGIN, loginController);
 
 router.post(REGISTER, registerController);
 

@@ -6,33 +6,35 @@ const {
 const { writeIntoFile, readFromFile } = require("../utils/fileSystemUtils");
 const { checkEntireExists } = require("../utils/dataManipulationUtils");
 const AppError = require("../AppError");
+const { ERROR_MESSAGES } = require("../constants/constants");
+const { MISSING_PAYLOAD, USER_NOT_FOUND, INCORRECT_PASSWORD, USER_EXIST } =
+  ERROR_MESSAGES;
 
 /**
  * @description checks for valid username and password on success returns jwt token
  * @param {object} requestBody
  * @returns returns the token on successful login
  */
-const login = async (requestBody) => {
-  // logic for login
+const loginUser = async (requestBody) => {
   if (!requestBody.password || !requestBody.userId) {
-    throw new AppError(400, "Recheck missing payload", "MISSING_PAYLOAD");
+    throw new AppError(
+      400,
+      MISSING_PAYLOAD.MESSAGE,
+      MISSING_PAYLOAD.ERROR_CODE
+    );
   }
   const users = readFromFile("data/users.json");
   const userFound = checkEntireExists(users, requestBody.userId, "userId");
   if (!userFound)
-    throw new AppError(
-      404,
-      "Invalid credentials user not found",
-      "USER_NOT_FOUND"
-    );
+    throw new AppError(404, USER_NOT_FOUND.MESSAGE, USER_NOT_FOUND.MESSAGE);
   if (userFound) {
     const { userId } = requestBody;
     const valid = decryptPassword(requestBody.password, userFound.password);
     if (!valid)
       throw new AppError(
         404,
-        "Invalid credentials password incorrect",
-        "USER_NOT_FOUND"
+        INCORRECT_PASSWORD.MESSAGE,
+        INCORRECT_PASSWORD.ERROR_CODE
       );
     if (valid) {
       const token = jwt.sign({ userId }, process.env.SECRET_KEY, {
@@ -48,10 +50,14 @@ const login = async (requestBody) => {
  * @param {*} param - contains username password
  * @returns registered user
  */
-const register = async ({ userId, username, password }) => {
+const registerUser = async ({ userId, username, password }) => {
   // logic to registerif (!password || !username) {
   if (!userId || !password || !username) {
-    throw new AppError(400, "Recheck missing payload", "MISSING_PAYLOAD");
+    throw new AppError(
+      400,
+      MISSING_PAYLOAD.MESSAGE,
+      MISSING_PAYLOAD.ERROR_CODE
+    );
   }
   const hashedPassword = encryptPassword(password);
   let users = readFromFile("data/users.json");
@@ -65,7 +71,7 @@ const register = async ({ userId, username, password }) => {
         password: hashedPassword,
       });
     else {
-      throw new AppError(400, "User already exist", "USER_EXIST");
+      throw new AppError(400, USER_EXIST.MESSAGE, USER_EXIST.ERROR_CODE);
     }
   } else {
     users = [{ userId: userId, username: username, password: hashedPassword }];
@@ -76,4 +82,4 @@ const register = async ({ userId, username, password }) => {
   }
 };
 
-module.exports = { login, register };
+module.exports = { loginUser, registerUser };
