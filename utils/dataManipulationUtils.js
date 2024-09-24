@@ -1,5 +1,3 @@
-const AppError = require("../AppError");
-
 const checkEntireExists = (data, item, key) => {
   const foundData = data?.find((dataItem) => dataItem[key] === item);
   return foundData;
