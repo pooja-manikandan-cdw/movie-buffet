@@ -21,6 +21,6 @@ router.post("/", authoriseUser, createMovieController);
 
 router.patch("/:movieId", authoriseUser, updateMovieController);
 
-router.delete("/:movieId", authoriseUser, deleteMovieController);
+router.delete("/:movieId", deleteMovieController);
 
 module.exports = router;

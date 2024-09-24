@@ -15,9 +15,11 @@ const {
   MISSING_PAYLOAD,
 } = ERROR_MESSAGES;
 
+const { Movies } = require("../models/stepDbSchema");
+
 const getAllMovies = async () => {
   try {
-    const movies = readFromFile("data/movies.json");
+    const movies = await Movies.find();
     return movies;
   } catch (e) {
     throw e;
@@ -27,7 +29,7 @@ const getAllMovies = async () => {
 const getMovieById = async (movieId) => {
   try {
     if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
-    const movies = readFromFile("data/movies.json");
+    const movies = await Movies.find();
     const movieFound = checkEntireExists(movies, movieId, "movieId");
     if (!movieFound) throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
     return movieFound;
@@ -39,7 +41,7 @@ const getMovieById = async (movieId) => {
 const getMovieByGenre = async (genre) => {
   try {
     if (!genre) throw new Error(MISSING_PARAM.ERROR_CODE);
-    const movies = readFromFile("data/movies.json");
+    const movies = await Movies.find();
     const movieFound = getAllEntires(movies, genre, "genre");
     if (!movieFound) throw new Error(GENRE_MOVIE_NOT_FOUND.ERROR_CODE);
     return movieFound;
@@ -62,7 +64,7 @@ const createMovie = async (movie) => {
     ) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    let movies = readFromFile("data/movies.json");
+    let movies = await Movies.find();
     let movieExists;
     if (movies) {
       movieExists = checkEntireExists(movies, movieId, "movieId");
@@ -86,7 +88,7 @@ const createMovie = async (movie) => {
 const updateMovie = async (movieId, data) => {
   try {
     if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
-    const movies = readFromFile("data/movies.json");
+    const movies = await Movies.find();
     const movieFound = checkEntireExists(movies, movieId, "movieId");
     if ("movieId" in data) {
       throw new Error(INVALID.ERROR_CODE);
@@ -104,6 +106,8 @@ const updateMovie = async (movieId, data) => {
 
 const deleteMovie = async (movieId) => {
   if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
+
+  await Movies.deleteOne({ movieId: movieId });
 
   let movies = readFromFile("data/movies.json");
 

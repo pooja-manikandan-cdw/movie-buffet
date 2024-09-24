@@ -1,3 +1,4 @@
+const { Users } = require("../models/stepDbSchema");
 const jwt = require("jsonwebtoken");
 const {
   encryptPassword,
@@ -19,7 +20,7 @@ const loginUser = async (requestBody) => {
     if (!requestBody.password || !requestBody.userId) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    const users = readFromFile("data/users.json");
+    const users = await Users.find();
     const userFound = checkEntireExists(users, requestBody.userId, "userId");
     if (!userFound) throw new Error(USER_NOT_FOUND.ERROR_CODE);
     if (userFound) {
