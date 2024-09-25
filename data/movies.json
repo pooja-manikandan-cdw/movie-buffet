@@ -79,13 +79,5 @@
     "rating": 8.3,
     "moviePoster": "",
     "moviePlot": "A troubled young genius finds his allegiance to his friends challenged by new opportunities."
-  },
-  {
-    "movieId": "11",
-    "movieName": "Good Will Hunting",
-    "genre": "drama",
-    "favorite": "true",
-    "rating": 8.3,
-    "moviePlot": "A troubled young genius finds his allegiance to his friends challenged by new opportunities."
   }
 ]
