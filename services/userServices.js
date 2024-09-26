@@ -4,8 +4,6 @@ const {
   encryptPassword,
   decryptPassword,
 } = require("../utils/dataEncryptionUtils");
-const { writeIntoFile, readFromFile } = require("../utils/fileSystemUtils");
-const { checkEntireExists } = require("../utils/dataManipulationUtils");
 const { ERROR_MESSAGES } = require("../constants/constants");
 const { MISSING_PAYLOAD, USER_NOT_FOUND, INCORRECT_PASSWORD, USER_EXIST } =
   ERROR_MESSAGES;
@@ -20,12 +18,11 @@ const loginUser = async (requestBody) => {
     if (!requestBody.password || !requestBody.userId) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    const users = await Users.find();
-    const userFound = checkEntireExists(users, requestBody.userId, "userId");
-    if (!userFound) throw new Error(USER_NOT_FOUND.ERROR_CODE);
-    if (userFound) {
-      const { userId } = requestBody;
-      const valid = decryptPassword(requestBody.password, userFound.password);
+    const users = await Users.findOne({ userId: requestBody.userId });
+    if (!users) throw new Error(USER_NOT_FOUND.ERROR_CODE);
+    if (users) {
+      const { userId } = users;
+      const valid = decryptPassword(requestBody.password, users.password);
       if (!valid) throw new Error(INCORRECT_PASSWORD.ERROR_CODE);
       if (valid) {
         const token = jwt.sign({ userId }, process.env.SECRET_KEY, {
@@ -50,17 +47,16 @@ const registerUser = async ({ userId, username, password }) => {
     if (!userId || !password || !username) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    let users = await Users.find();
-    let userExists;
-    const hashedPassword = encryptPassword(password);
-    userExists = checkEntireExists(users, userId, "userId");
+    const userExists = await Users.findOne({ userId: userId });
     if (!userExists) {
+      const hashedPassword = encryptPassword(password);
       const newUser = new Users({
         userId: userId,
         username: username,
         password: hashedPassword,
       });
-      await newUser.save();
+      const result = await newUser.save();
+      return result;
     } else {
       throw new Error(USER_EXIST.ERROR_CODE);
     }

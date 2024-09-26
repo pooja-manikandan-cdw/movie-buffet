@@ -84,7 +84,7 @@ const registerController = async (req, res, next) => {
         true,
         false,
         RESPONSE_MESSAGE.REGISTER_SUCCESS_MESSAGE,
-        []
+        response
       );
   } catch (error) {
     if (error.message === MISSING_PAYLOAD.ERROR_CODE) {

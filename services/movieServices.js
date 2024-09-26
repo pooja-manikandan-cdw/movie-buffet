@@ -1,9 +1,3 @@
-const { writeIntoFile, readFromFile } = require("../utils/fileSystemUtils");
-const {
-  checkEntireExists,
-  getEntireIndex,
-  getAllEntires,
-} = require("../utils/dataManipulationUtils");
 const { ERROR_MESSAGES } = require("../constants/constants");
 const {
   INVALID_PATH_PARAM,
@@ -29,10 +23,9 @@ const getAllMovies = async () => {
 const getMovieById = async (movieId) => {
   try {
     if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
-    const movies = await Movies.find();
-    const movieFound = checkEntireExists(movies, movieId, "movieId");
-    if (!movieFound) throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
-    return movieFound;
+    const movie = await Movies.findOne({ movieId: movieId });
+    if (!movie) throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
+    return movie;
   } catch (e) {
     throw e;
   }
@@ -41,10 +34,9 @@ const getMovieById = async (movieId) => {
 const getMovieByGenre = async (genre) => {
   try {
     if (!genre) throw new Error(MISSING_PARAM.ERROR_CODE);
-    const movies = await Movies.find();
-    const movieFound = getAllEntires(movies, genre, "genre");
-    if (!movieFound) throw new Error(GENRE_MOVIE_NOT_FOUND.ERROR_CODE);
-    return movieFound;
+    const movie = await Movies.find({ genre: genre });
+    if (!movie) throw new Error(GENRE_MOVIE_NOT_FOUND.ERROR_CODE);
+    return movie;
   } catch (e) {
     throw e;
   }
@@ -64,9 +56,7 @@ const createMovie = async (movie) => {
     ) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    let movies = await Movies.find();
-    let movieExists;
-    movieExists = checkEntireExists(movies, movieId, "movieId");
+    let movieExists = await Movies.findOne({ movieId: movieId });
     if (!movieExists) {
       const movie = new Movies({
         movieId,
@@ -93,7 +83,10 @@ const updateMovie = async (movieId, data) => {
       throw new Error(INVALID.ERROR_CODE);
     }
     const movieUpdated = await Movies.updateOne({ movieId: movieId }, data);
-    return movieUpdated;
+    if (movieUpdated.modifiedCount) {
+      return movieUpdated;
+    }
+    throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
   } catch (e) {
     throw e;
   }
