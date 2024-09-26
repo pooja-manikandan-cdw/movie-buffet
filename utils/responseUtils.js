@@ -1,5 +1,4 @@
 const setResponse = (res, status, success, error, message, data) => {
-  console.log(status, success, error, message, data);
   return res.status(status).send({
     success: success,
     error: error,

@@ -50,28 +50,19 @@ const registerUser = async ({ userId, username, password }) => {
     if (!userId || !password || !username) {
       throw new Error(MISSING_PAYLOAD.ERROR_CODE);
     }
-    let users = readFromFile("data/users.json");
+    let users = await Users.find();
     let userExists;
-    if (users) {
-      const hashedPassword = encryptPassword(password);
-      userExists = checkEntireExists(users, userId, "userId");
-      if (!userExists) {
-        users.push({
-          userId: userId,
-          username: username,
-          password: hashedPassword,
-        });
-      } else {
-        throw new Error(USER_EXIST.ERROR_CODE);
-      }
+    const hashedPassword = encryptPassword(password);
+    userExists = checkEntireExists(users, userId, "userId");
+    if (!userExists) {
+      const newUser = new Users({
+        userId: userId,
+        username: username,
+        password: hashedPassword,
+      });
+      await newUser.save();
     } else {
-      users = [
-        { userId: userId, username: username, password: hashedPassword },
-      ];
-    }
-    if (!userExists || !users) {
-      writeIntoFile("data/users.json", JSON.stringify(users, null, 2));
-      return users;
+      throw new Error(USER_EXIST.ERROR_CODE);
     }
   } catch (e) {
     throw e;

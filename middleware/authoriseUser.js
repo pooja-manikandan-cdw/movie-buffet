@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
-const { ERROR_MESSAGES } = require("../constants/constants");
+const { STATUS_CODE, ERROR_MESSAGES } = require("../constants/constants");
 const { UNAUTHORIZED_USER, TOKEN_EXPIRED } = ERROR_MESSAGES;
+const { setResponse } = require("../utils/responseUtils");
 
 /**
  * @description this checks if the user is authorized and assign user to req
@@ -11,23 +12,23 @@ const { UNAUTHORIZED_USER, TOKEN_EXPIRED } = ERROR_MESSAGES;
 const authoriseUser = (req, res, next) => {
   const header = req.headers["authorization"];
   const token = header && header.split(" ")[1];
-  if (!token) throw new Error(UNAUTHORIZED_USER.ERROR_CODE);
-  setResponse(
-    res,
-    STATUS_CODE.UNAUTHORIZED,
-    false,
-    true,
-    UNAUTHORIZED_USER.LOGIN_SUCCESS_MESSAGE,
-    {}
-  );
+  if (!token)
+    return setResponse(
+      res,
+      STATUS_CODE.UNAUTHORIZED,
+      false,
+      true,
+      UNAUTHORIZED_USER.LOGIN_SUCCESS_MESSAGE,
+      {}
+    );
   jwt.verify(token, process.env.SECRET_KEY, (err, user) => {
     if (err) {
-      setResponse(
+      return setResponse(
         res,
         STATUS_CODE.UNAUTHORIZED,
         false,
         true,
-        TOKEN_EXPIRED.LOGIN_SUCCESS_MESSAGE,
+        TOKEN_EXPIRED.MESSAGE,
         {}
       );
     }

@@ -19,6 +19,7 @@ const {
   MOVIE_EXIST,
   INVALID,
   MISSING_PAYLOAD,
+  USER_EXIST,
 } = ERROR_MESSAGES;
 
 const getAllMoviesController = async (req, res, next) => {
@@ -121,7 +122,6 @@ const createMovieController = async (req, res, next) => {
       );
     }
   } catch (error) {
-    console.log("hete");
     if (error.message === MISSING_PAYLOAD.ERROR_CODE) {
       setResponse(
         res,

@@ -66,19 +66,20 @@ const createMovie = async (movie) => {
     }
     let movies = await Movies.find();
     let movieExists;
-    if (movies) {
-      movieExists = checkEntireExists(movies, movieId, "movieId");
-      if (!movieExists)
-        movies.push({ movieId, movieName, genre, favorite, rating, moviePlot });
-      else {
-        throw new Error(MOVIE_EXIST.ERROR_CODE);
-      }
+    movieExists = checkEntireExists(movies, movieId, "movieId");
+    if (!movieExists) {
+      const movie = new Movies({
+        movieId,
+        movieName,
+        genre,
+        favorite,
+        rating,
+        moviePlot,
+      });
+      await movie.save();
+      return movie;
     } else {
-      movies = [{ movieId, movieName, genre, favorite, rating, moviePlot }];
-    }
-    if (!movieExists || !movies) {
-      writeIntoFile("data/movies.json", JSON.stringify(movies, null, 2));
-      return movies;
+      throw new Error(MOVIE_EXIST.ERROR_CODE);
     }
   } catch (e) {
     throw e;
@@ -88,17 +89,11 @@ const createMovie = async (movie) => {
 const updateMovie = async (movieId, data) => {
   try {
     if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
-    const movies = await Movies.find();
-    const movieFound = checkEntireExists(movies, movieId, "movieId");
     if ("movieId" in data) {
       throw new Error(INVALID.ERROR_CODE);
     }
-    if (!movieFound) throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
-    const updatedMovie = Object.assign(movieFound, data);
-    const index = movies.indexOf(movieFound);
-    movies[index] = updatedMovie;
-    writeIntoFile("data/movies.json", JSON.stringify(movies, null, 2));
-    return updatedMovie;
+    const movieUpdated = await Movies.updateOne({ movieId: movieId }, data);
+    return movieUpdated;
   } catch (e) {
     throw e;
   }
@@ -107,19 +102,12 @@ const updateMovie = async (movieId, data) => {
 const deleteMovie = async (movieId) => {
   if (!Number(movieId)) throw new Error(INVALID_PATH_PARAM.ERROR_CODE);
 
-  await Movies.deleteOne({ movieId: movieId });
-
-  let movies = readFromFile("data/movies.json");
-
-  const movieFound = getEntireIndex(movies, movieId, "movieId");
-
-  if (movieFound === -1) throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
-
-  movies = [...movies.slice(0, movieFound), ...movies.slice(movieFound + 1)];
-
-  writeIntoFile("data/movies.json", JSON.stringify(movies, null, 2));
-
-  return movies;
+  const deletedMovie = await Movies.deleteOne({ movieId: movieId });
+  if (deletedMovie.deletedCount) {
+    return deletedMovie;
+  } else {
+    throw new Error(MOVIE_NOT_FOUND.ERROR_CODE);
+  }
 };
 
 module.exports = {
