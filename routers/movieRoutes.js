@@ -7,7 +7,6 @@ const {
   deleteMovieController,
   getMovieByIdController,
 } = require("../controllers/moviesController");
-const { authoriseUser } = require("../middleware/authoriseUser");
 
 const router = express.Router();
 
@@ -17,9 +16,9 @@ router.get("/", (req, res, next) => {
 
 router.get("/:movieId", getMovieByIdController);
 
-router.post("/", authoriseUser, createMovieController);
+router.post("/", createMovieController);
 
-router.patch("/:movieId", authoriseUser, updateMovieController);
+router.patch("/:movieId", updateMovieController);
 
 router.delete("/:movieId", deleteMovieController);
 
